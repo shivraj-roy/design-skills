@@ -1,5 +1,6 @@
-import { Action, ActionPanel, Color, Icon, List } from "@raycast/api";
+import { Action, ActionPanel, Clipboard, Color, Icon, List, showHUD } from "@raycast/api";
 import { DesignSkill } from "../shared";
+import { fetchDesignMd } from "../utils/github";
 import { formatDownloadCount } from "../utils/format";
 import { DesignDetail } from "./DesignDetail";
 
@@ -35,16 +36,26 @@ export function DesignListItem({ design, downloadCount, isFavorite, onToggleFavo
       actions={
         <ActionPanel>
           <ActionPanel.Section>
-            <Action.CopyToClipboard
-              title="Copy Install Command"
-              icon={Icon.Terminal}
-              content={installCommand}
-            />
+            <Action.CopyToClipboard title="Copy Install Command" icon={Icon.Terminal} content={installCommand} />
             <Action.Push
               title="View DESIGN.md"
               icon={Icon.Eye}
               target={<DesignDetail design={design} />}
               shortcut={{ modifiers: ["cmd"], key: "return" }}
+            />
+            <Action
+              title="Copy DESIGN.md Content"
+              icon={Icon.Clipboard}
+              shortcut={{ modifiers: ["cmd", "shift"], key: "c" }}
+              onAction={async () => {
+                const content = await fetchDesignMd(design.slug);
+                if (content) {
+                  await Clipboard.copy(content);
+                  await showHUD("DESIGN.md copied");
+                } else {
+                  await showHUD("Failed to fetch DESIGN.md");
+                }
+              }}
             />
             <Action
               title={isFavorite ? "Remove from Favorites" : "Add to Favorites"}
@@ -59,7 +70,7 @@ export function DesignListItem({ design, downloadCount, isFavorite, onToggleFavo
               url={design.siteUrl}
               shortcut={{ modifiers: ["cmd"], key: "o" }}
             />
-<Action.CopyToClipboard
+            <Action.CopyToClipboard
               title="Copy DESIGN.md URL"
               content={design.designMdUrl}
               shortcut={{ modifiers: ["cmd"], key: "." }}

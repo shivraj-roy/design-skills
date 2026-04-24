@@ -2,8 +2,8 @@
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "design-skills",
   "title": "Design Skills",
-  "description": "Browse and save DESIGN.md files from getdesign.md directly into your project.",
-  "icon": "extension-icon.png",
+  "description": "Browse, preview, and install brand design skills for your AI coding agent.",
+  "icon": "icon.png",
   "author": "shivraj-roy",
   "platforms": [
     "macOS",
@@ -18,7 +18,7 @@
     {
       "name": "search-design-skills",
       "title": "Search Design Skills",
-      "subtitle": "Design Skills",
+      "subtitle": "Getdesign",
       "description": "Browse and search DESIGN.md files from the awesome-design-md collection.",
       "mode": "view"
     }
