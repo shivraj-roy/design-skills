@@ -1,25 +1,23 @@
 import { useCachedPromise } from "@raycast/utils";
-import { fetchDesignSlugs } from "../utils/github";
-import { lookupCatalog } from "../utils/catalog";
+import { scrapeDesigns } from "../utils/scrape";
 import { DesignSkill, getGithubUrl, getRawDesignMdUrl, getSiteUrl } from "../shared";
 
 export function useDesigns() {
   return useCachedPromise(
     async (): Promise<DesignSkill[]> => {
-      const slugs = await fetchDesignSlugs();
-      return slugs
-        .map((slug): DesignSkill => {
-          const entry = lookupCatalog(slug);
-          return {
-            slug,
-            name: entry.name,
-            category: entry.category,
-            description: entry.description,
-            designMdUrl: getRawDesignMdUrl(slug),
-            githubUrl: getGithubUrl(slug),
-            siteUrl: getSiteUrl(slug),
-          };
-        })
+      const scraped = await scrapeDesigns();
+      return scraped
+        .map(
+          (d): DesignSkill => ({
+            slug: d.slug,
+            name: d.name,
+            category: d.category,
+            description: d.description,
+            designMdUrl: getRawDesignMdUrl(d.slug),
+            githubUrl: getGithubUrl(d.slug),
+            siteUrl: getSiteUrl(d.slug),
+          }),
+        )
         .sort((a, b) => a.name.localeCompare(b.name));
     },
     [],
